@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">HealthCareDisease</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_login">Login</string>
+    <string name="icon_password_visible">Click here to see password</string>
+    <string name="icon_password_hidden">Click here to hide password</string>
+    <string name="title_login_heading_text">Login Heading</string>
+    <string name="lbl_drug_description">Drug Description</string>
+    <string name="btn_forgot_password">Forgot Password</string>
+    <string name="btn_login">Login</string>
+    <string name="hint_login_email_or_username">Email/Username</string>
+    <string name="hint_login_password">Password</string>
+    <string name="no_data_available">No Data Available</string>
+    <string name="msg_no_data_add_record">Oops..!! It seems like no data available right now. Please try after sometime.</string>
+    <string name="lbl_dose">Dose:</string>
+    <string name="lbl_strength">Strength:</string>
+    <string name="lbl_hi">Hii %s,</string>
+    <string name="lbl_good_morning">Good Morning</string>
+    <string name="lbl_good_afternoon">Good Afternoon</string>
+    <string name="lbl_good_evening">Good Evening</string>
+    <string name="lbl_good_night">Good Night</string>
+    <string name="lbl_disease_details">Disease Details</string>
+    <string name="lbl_back">Back</string>
+</resources>
