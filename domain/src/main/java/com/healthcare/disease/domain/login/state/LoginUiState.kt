@@ -8,6 +8,6 @@ data class LoginUiState(
 )
 
 sealed class LoginError : IllegalStateException() {
-    data object NotRegistered : LoginError()
-    data object Unknown : LoginError()
+    data object NotValidUsername : LoginError()
+    data object NotValidPassword : LoginError()
 }

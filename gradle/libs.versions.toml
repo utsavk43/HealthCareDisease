@@ -21,11 +21,12 @@ ksp = "2.0.0-1.0.21"
 nav_version = "2.7.7"
 accompanist_version = "0.34.0"
 compose_material_icons_version = "1.6.8"
-coil_version = "2.2.2"
 retrofit_version = "2.11.0"
 http_loggin_interceptor = "4.12.0"
 room = "2.6.1"
 uiTextGoogleFontsVersion = "1.6.8"
+datastoreVersion = "1.1.1"
+kotlinTestVersion="1.7.10"
 
 
 [libraries]
@@ -52,7 +53,6 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 nav-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav_version" }
 accompanist-systemui-controller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist_version" }
 material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "compose_material_icons_version" }
-coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil_version" }
 lifecycle-vm-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
 lifecycle-vm-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -62,6 +62,8 @@ okhttp_logger_interceptor = { group = "com.squareup.okhttp3", name = "logging-in
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFontsVersion" }
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastoreVersion" }
+kotlin-test={group = "org.jetbrains.kotlin", name="kotlin-test-junit5", version.ref="kotlinTestVersion"}
 
 
 [plugins]

@@ -1,5 +1,6 @@
 package com.healthcare.disease.ui.commonComposableView
 
+import androidx.compose.animation.core.animate
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,14 +26,14 @@ fun TitleText(
 fun MediumTitleText(
     modifier: Modifier = Modifier,
     text: String,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
 ) {
     Text(
         modifier = modifier,
         text = text,
         style = MaterialTheme.typography.headlineMedium,
         color = MaterialTheme.colorScheme.primary,
-        textAlign = textAlign
+        textAlign = textAlign,
     )
 }
 
@@ -51,7 +52,6 @@ fun BodyLargeText(
         textAlign = textAlign
     )
 }
-
 
 
 @Composable

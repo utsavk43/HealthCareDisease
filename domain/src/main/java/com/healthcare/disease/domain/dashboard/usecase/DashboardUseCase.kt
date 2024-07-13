@@ -6,23 +6,21 @@ import java.util.Date
 import javax.inject.Inject
 
 class DashboardUseCase @Inject constructor(
-    private val dashboardRepository: DashboardRepository
+    private val dashboardRepository: DashboardRepository,
+
 ) {
 
     suspend fun diseaseProblems() = dashboardRepository.diseaseProblems()
-    fun getListOfDiseaseWithMedications() = dashboardRepository.getDiseaseProblems()
-    fun getGreetings(): Int {
-        val date = Date()
-        val cal: Calendar = Calendar.getInstance()
-        cal.setTime(date)
-        val hour: Int = cal.get(Calendar.HOUR_OF_DAY)
 
+    fun getListOfDiseaseWithMedications() = dashboardRepository.getDiseaseProblems()
+
+    fun getGreetings(hour: Int = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)): Int {
         return when (hour) {
-            in 5..12 -> {
+            in 3..12 -> {
                 1
             }
 
-            in 12..26 -> {
+            in 12..16 -> {
                 2
             }
 

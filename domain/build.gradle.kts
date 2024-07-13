@@ -42,5 +42,8 @@ dependencies {
     implementation(libs.lifecycle.vm.ktx)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.hilt.android)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
     ksp(libs.hilt.compiler)
 }

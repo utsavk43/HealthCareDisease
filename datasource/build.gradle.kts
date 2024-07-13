@@ -39,6 +39,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
+    implementation(libs.datastore)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 }

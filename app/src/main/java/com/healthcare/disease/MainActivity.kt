@@ -20,10 +20,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HealthCareDiseaseTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
-                    Box(modifier = Modifier.padding(paddingValues)) {
-                        AppContainer()
-                    }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AppContainer()
                 }
             }
         }

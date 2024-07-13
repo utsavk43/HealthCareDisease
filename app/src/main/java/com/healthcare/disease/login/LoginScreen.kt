@@ -1,42 +1,42 @@
 package com.healthcare.disease.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Scale
 import com.healthcare.disease.R
 import com.healthcare.disease.domain.common.state.UiState
 import com.healthcare.disease.domain.common.state.requireSuccess
+import com.healthcare.disease.domain.login.state.LoginError
 import com.healthcare.disease.domain.login.state.LoginUiState
 import com.healthcare.disease.domain.login.vm.LoginViewModel
-import com.healthcare.disease.ui.commonComposableView.UsernameTextField
 import com.healthcare.disease.ui.commonComposableView.MediumTitleText
 import com.healthcare.disease.ui.commonComposableView.NormalButton
 import com.healthcare.disease.ui.commonComposableView.PasswordTextField
 import com.healthcare.disease.ui.commonComposableView.TitleText
+import com.healthcare.disease.ui.commonComposableView.UsernameTextField
 import com.healthcare.disease.ui.navigation.Screen
 import com.healthcare.disease.ui.theme.AppTheme
 
@@ -45,6 +45,15 @@ fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(Unit) {
+        if (viewModel.isSessionActive()) {
+            navController.navigate(
+                Screen.Dashboard.navigationPath(viewModel.uiState.requireSuccess { username })
+            ) {
+                popUpTo(Screen.LoginFlow.referencePath) { inclusive = true }
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,8 +71,11 @@ fun LoginScreen(
         ) {
             Column(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = AppTheme.dimens.paddingLarge)
-                    .padding(bottom = AppTheme.dimens.paddingExtraLarge)
+                    .padding(bottom = AppTheme.dimens.paddingExtraLarge),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
 
                 // Heading Jetpack Compose
@@ -75,17 +87,9 @@ fun LoginScreen(
                     textAlign = TextAlign.Center
                 )
 
-                // Login Logo
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(128.dp)
-                        .padding(top = AppTheme.dimens.paddingSmall),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(data = R.drawable.jetpack_compose_logo)
-                        .crossfade(enable = true)
-                        .scale(Scale.FILL)
-                        .build(),
+                Image(
+                    modifier = Modifier.size(128.dp),
+                    painter = painterResource(id = R.drawable.jetpack_compose_logo),
                     contentDescription = stringResource(id = R.string.title_login_heading_text)
                 )
 
@@ -101,10 +105,12 @@ fun LoginScreen(
                     viewModel::setUserName,
                     viewModel::setPassword,
                     onSubmit = {
-                        navController.navigate(
-                            Screen.Dashboard.navigationPath(viewModel.uiState.requireSuccess { username })
-                        ) {
-                            popUpTo(Screen.LoginFlow.referencePath) { inclusive = true }
+                        if (viewModel.isValid()) {
+                            navController.navigate(
+                                Screen.Dashboard.navigationPath(viewModel.uiState.requireSuccess { username })
+                            ) {
+                                popUpTo(Screen.LoginFlow.referencePath) { inclusive = true }
+                            }
                         }
                     },
                     onForgotPasswordClick = {}
@@ -134,8 +140,8 @@ private fun LoginInputs(
             value = uiState.requireSuccess { username },
             onValueChange = onUsernameChange,
             label = stringResource(id = R.string.hint_login_email_or_username),
-            isError = false,
-            errorText = ""
+            isError = uiState.requireSuccess { formError } == LoginError.NotValidUsername,
+            errorText = stringResource(id = R.string.msg_enter_valid_username)
         )
 
         // Password
@@ -146,8 +152,8 @@ private fun LoginInputs(
             value = uiState.requireSuccess { password },
             onValueChange = onPasswordChange,
             label = stringResource(id = R.string.hint_login_password),
-            isError = false,
-//            errorText = stringResource(id = loginState.errorState.passwordErrorState.errorMessageStringResource),
+            isError = uiState.requireSuccess { formError } == LoginError.NotValidPassword,
+            errorText = stringResource(id = R.string.msg_enter_valid_password),
             imeAction = ImeAction.Done
         )
 

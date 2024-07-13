@@ -20,5 +20,10 @@
     <string name="lbl_good_evening">Good Evening</string>
     <string name="lbl_good_night">Good Night</string>
     <string name="lbl_disease_details">Disease Details</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="lbl_menu">Menu</string>
     <string name="lbl_back">Back</string>
+    <string name="lbl_logout">Logout</string>
+    <string name="msg_enter_valid_username">Please enter valid username</string>
+    <string name="msg_enter_valid_password">Password must contain at least 1 uppercase, 1 lowercase, 1 digit, 1 special character and must be at least 6 characters long</string>
 </resources>

@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.material.icons)
     implementation(libs.accompanist.systemui.controller)
-    implementation(libs.coil.compose)
     implementation(libs.nav.compose)
     implementation(libs.androidx.compose.runtime)
 

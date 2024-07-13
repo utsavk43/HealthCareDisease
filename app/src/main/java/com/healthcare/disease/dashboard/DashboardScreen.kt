@@ -1,6 +1,10 @@
 package com.healthcare.disease.dashboard
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,24 +23,35 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.Logout
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Scale
 import com.healthcare.disease.R
-import com.healthcare.disease.diseaseDetail.DiseaseDetailScreen
 import com.healthcare.disease.domain.common.state.requireSuccess
 import com.healthcare.disease.domain.dashboard.model.DiseaseModel
 import com.healthcare.disease.domain.dashboard.vm.DashboardViewModel
@@ -48,7 +63,9 @@ import com.healthcare.disease.ui.commonComposableView.MediumTitleText
 import com.healthcare.disease.ui.commonComposableView.TitleText
 import com.healthcare.disease.ui.navigation.Screen
 import com.healthcare.disease.ui.theme.AppTheme
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     userName: String,
@@ -56,47 +73,100 @@ fun DashboardScreen(
     dashboardViewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val uiState = dashboardViewModel.uiState
+    var visible by remember { mutableStateOf(false) }
 
-    Column {
-        ElevatedCard(
+    LaunchedEffect(Unit) {
+        dashboardViewModel.setUsername(userName)
+        delay(timeMillis = 1000)
+        visible = true
+    }
+
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(stringResource(id = R.string.title_dashboard))
+                },
+                navigationIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Outlined.Menu,
+                            contentDescription = stringResource(id = R.string.lbl_menu)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        dashboardViewModel.logoutUserSession()
+                        navController.navigate(
+                            Screen.LoginFlow.referencePath
+                        ){
+                            popUpTo(Screen.Dashboard.referencePath) { inclusive = true }
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.Logout,
+                            contentDescription = stringResource(id = R.string.lbl_logout)
+                        )
+                    }
+                }
+            )
+        },
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(AppTheme.dimens.paddingLarge)
+                .padding(innerPadding)
         ) {
-            Column(
+            ElevatedCard(
                 modifier = Modifier
-                    .padding(horizontal = AppTheme.dimens.paddingLarge)
-                    .padding(bottom = AppTheme.dimens.paddingExtraLarge)
+                    .height(200.dp)
+                    .fillMaxWidth()
+                    .padding(AppTheme.dimens.paddingLarge)
             ) {
-                MediumTitleText(
+                Column(
                     modifier = Modifier
-                        .padding(top = AppTheme.dimens.paddingLarge)
-                        .fillMaxWidth(),
-                    text = stringResource(id = R.string.lbl_hi, userName),
-                    textAlign = TextAlign.Center
-                )
+                        .padding(horizontal = AppTheme.dimens.paddingLarge)
+                        .padding(bottom = AppTheme.dimens.paddingExtraLarge)
+                ) {
 
-                TitleText(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    text = when (dashboardViewModel.getGreetings()) {
-                        1 -> stringResource(id = R.string.lbl_good_morning)
-                        2 -> stringResource(id = R.string.lbl_good_afternoon)
-                        else -> stringResource(id = R.string.lbl_good_evening)
-                    },
-                    textAlign = TextAlign.Center
+                    MediumTitleText(
+                        modifier = Modifier
+                            .padding(top = AppTheme.dimens.paddingLarge)
+                            .fillMaxWidth(),
+                        text = stringResource(id = R.string.lbl_hi, userName),
+                        textAlign = TextAlign.Center
+                    )
+
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = slideInHorizontally(
+                            initialOffsetX = { -200 },
+                            animationSpec = tween(durationMillis = 1000)
+                        ),
+                    ) {
+                        TitleText(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            text = when (dashboardViewModel.getGreetings()) {
+                                1 -> stringResource(id = R.string.lbl_good_morning)
+                                2 -> stringResource(id = R.string.lbl_good_afternoon)
+                                else -> stringResource(id = R.string.lbl_good_evening)
+                            },
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(AppTheme.dimens.paddingNormal))
+
+            DashboardListView(
+                data = uiState.requireSuccess { diseaseWithMedicationsList }
+            ) { medicationId ->
+                navController.navigate(
+                    Screen.DiseaseDetail.navigationPath(medicationId.toString())
                 )
             }
-        }
-
-        Spacer(modifier = Modifier.height(AppTheme.dimens.paddingNormal))
-
-        DashboardListView(
-            data = uiState.requireSuccess { diseaseWithMedicationsList }
-        ) { medicationId ->
-            navController.navigate(
-                Screen.DiseaseDetail.navigationPath(medicationId.toString())
-            )
         }
     }
 }
@@ -145,16 +215,9 @@ fun DashboardListItemCard(row: DiseaseModel, onItemClick: (Int) -> Unit) {
                 .clip(shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(data = R.drawable.jetpack_compose_logo)
-                    .crossfade(enable = true)
-                    .scale(Scale.FILL)
-                    .build(),
-                contentDescription = stringResource(id = R.string.lbl_drug_description)
+            Image(
+                painter = painterResource(id = R.drawable.jetpack_compose_logo),
+                contentDescription = stringResource(id = R.string.title_login_heading_text)
             )
         }
         Column(
